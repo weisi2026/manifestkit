@@ -1,0 +1,165 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Moon Phase Calendar — Lunar Manifestation Guide | ManifestKit" description="Track moon phases and get manifestation tips for each lunar cycle. Free moon phase calendar with spiritual guidance.">
+  <section class="max-w-4xl mx-auto">
+    <h1 class="text-3xl md:text-4xl font-bold text-center mb-2">
+      <span class="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">🌙 Moon Phase & Manifestation</span>
+    </h1>
+    <p class="text-center text-[#9B8CB8] mb-8">Align your intentions with the cosmic rhythm of the moon.</p>
+
+    <!-- Current Phase -->
+    <div id="current-phase" class="p-6 rounded-2xl bg-[#1A1333] border border-indigo-800/40 text-center mb-8">
+      <div id="phase-emoji" class="text-6xl mb-3">🌑</div>
+      <h2 id="phase-name" class="text-2xl font-bold text-indigo-300">Loading...</h2>
+      <div class="flex justify-center gap-6 mt-3 text-sm text-[#9B8CB8]">
+        <span>Illumination: <strong id="phase-illum" class="text-indigo-200">0%</strong></span>
+        <span>Day in Cycle: <strong id="phase-day" class="text-indigo-200">0</strong></span>
+      </div>
+      <p id="phase-tip" class="mt-4 text-purple-200 italic max-w-lg mx-auto"></p>
+      <p id="phase-action" class="mt-2 text-sm text-amber-400"></p>
+    </div>
+
+    <!-- Next Key Phases -->
+    <div class="grid md:grid-cols-2 gap-4 mb-8">
+      <div class="p-4 rounded-xl bg-[#1A1333] border border-indigo-800/30 text-center">
+        <p class="text-[#9B8CB8] text-sm">🌑 Next New Moon</p>
+        <p id="next-new" class="text-lg text-indigo-200 font-semibold mt-1">—</p>
+      </div>
+      <div class="p-4 rounded-xl bg-[#1A1333] border border-indigo-800/30 text-center">
+        <p class="text-[#9B8CB8] text-sm">🌕 Next Full Moon</p>
+        <p id="next-full" class="text-lg text-amber-200 font-semibold mt-1">—</p>
+      </div>
+    </div>
+
+    <!-- Monthly Calendar -->
+    <div class="p-6 rounded-2xl bg-[#1A1333] border border-purple-800/30">
+      <div class="flex items-center justify-between mb-4">
+        <button id="prev-month" class="text-2xl text-purple-400 hover:text-amber-400">←</button>
+        <h2 id="calendar-title" class="text-lg font-semibold text-purple-300"></h2>
+        <button id="next-month" class="text-2xl text-purple-400 hover:text-amber-400">→</button>
+      </div>
+      <div id="calendar-grid" class="grid grid-cols-7 gap-1 text-center text-sm"></div>
+    </div>
+
+    <!-- Phase Guide -->
+    <article class="mt-10 space-y-4">
+      <h2 class="text-xl font-semibold text-purple-300">Moon Phase Manifestation Guide</h2>
+      <div class="grid md:grid-cols-2 gap-3">
+        <div class="p-4 rounded-xl bg-[#1A1333] border border-purple-800/20"><span class="text-xl">🌑</span><strong class="text-purple-200 ml-2">New Moon</strong><p class="text-[#9B8CB8] text-sm mt-1">Plant seeds of intention. Write your wishes and start new projects.</p></div>
+        <div class="p-4 rounded-xl bg-[#1A1333] border border-purple-800/20"><span class="text-xl">🌒</span><strong class="text-purple-200 ml-2">Waxing Crescent</strong><p class="text-[#9B8CB8] text-sm mt-1">Nurture your intentions with daily affirmations and small actions.</p></div>
+        <div class="p-4 rounded-xl bg-[#1A1333] border border-purple-800/20"><span class="text-xl">🌓</span><strong class="text-purple-200 ml-2">First Quarter</strong><p class="text-[#9B8CB8] text-sm mt-1">Push through challenges. Commit fully to your vision.</p></div>
+        <div class="p-4 rounded-xl bg-[#1A1333] border border-purple-800/20"><span class="text-xl">🌔</span><strong class="text-purple-200 ml-2">Waxing Gibbous</strong><p class="text-[#9B8CB8] text-sm mt-1">Refine and perfect. Trust the process as energy builds.</p></div>
+        <div class="p-4 rounded-xl bg-[#1A1333] border border-purple-800/20"><span class="text-xl">🌕</span><strong class="text-amber-200 ml-2">Full Moon</strong><p class="text-[#9B8CB8] text-sm mt-1">Maximum power! Celebrate, release, and express gratitude.</p></div>
+        <div class="p-4 rounded-xl bg-[#1A1333] border border-purple-800/20"><span class="text-xl">🌖</span><strong class="text-purple-200 ml-2">Waning Gibbous</strong><p class="text-[#9B8CB8] text-sm mt-1">Share wisdom and give back. Harvest the fruits of your work.</p></div>
+        <div class="p-4 rounded-xl bg-[#1A1333] border border-purple-800/20"><span class="text-xl">🌗</span><strong class="text-purple-200 ml-2">Last Quarter</strong><p class="text-[#9B8CB8] text-sm mt-1">Release and let go. Break old patterns and forgive.</p></div>
+        <div class="p-4 rounded-xl bg-[#1A1333] border border-purple-800/20"><span class="text-xl">🌘</span><strong class="text-purple-200 ml-2">Waning Crescent</strong><p class="text-[#9B8CB8] text-sm mt-1">Rest and surrender. Dream and prepare for the new cycle.</p></div>
+      </div>
+    </article>
+
+    <!-- Ad Slot -->
+    <div class="mt-8 text-center">
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6056859786205773" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    </div>
+  </section>
+
+  <script>
+    const SYNODIC = 29.53058867;
+    const KNOWN_NM = new Date(2000, 0, 6, 18, 14).getTime();
+    const tips = {
+      'New Moon': { tip: 'The darkest night holds the most potent seeds. Plant your intentions deeply.', action: 'Set new intentions, write goals, perform New Moon rituals' },
+      'Waxing Crescent': { tip: 'Your intentions are taking root. Nurture them with daily affirmations.', action: 'Take first steps, gather resources, build momentum' },
+      'First Quarter': { tip: 'Challenges arise to test your commitment. Push through with courage.', action: 'Make decisions, take bold action, commit to your vision' },
+      'Waxing Gibbous': { tip: 'Your manifestation is building energy. Refine and trust the process.', action: 'Refine plans, adjust strategies, practice gratitude' },
+      'Full Moon': { tip: 'Maximum illumination! Celebrate and release what no longer serves you.', action: 'Celebrate wins, release limiting beliefs, charge crystals' },
+      'Waning Gibbous': { tip: 'Time to share your wisdom. What you\'ve learned can illuminate others.', action: 'Share knowledge, express gratitude, give back' },
+      'Last Quarter': { tip: 'Release and let go. Old patterns must be shed for the new cycle.', action: 'Forgive, release negativity, break bad habits, declutter' },
+      'Waning Crescent': { tip: 'Rest and surrender. Dream and prepare for the next New Moon.', action: 'Rest, meditate, self-care, dream journaling, surrender' }
+    };
+
+    function getPhase(date) {
+      const diff = (date.getTime() - KNOWN_NM) / 86400000;
+      const dayInCycle = ((diff % SYNODIC) + SYNODIC) % SYNODIC;
+      const pct = dayInCycle / SYNODIC;
+      let name;
+      if (pct < 0.03 || pct > 0.97) name = 'New Moon';
+      else if (pct < 0.22) name = 'Waxing Crescent';
+      else if (pct < 0.28) name = 'First Quarter';
+      else if (pct < 0.47) name = 'Waxing Gibbous';
+      else if (pct < 0.53) name = 'Full Moon';
+      else if (pct < 0.72) name = 'Waning Gibbous';
+      else if (pct < 0.78) name = 'Last Quarter';
+      else name = 'Waning Crescent';
+      const emojis = {'New Moon':'🌑','Waxing Crescent':'🌒','First Quarter':'🌓','Waxing Gibbous':'🌔','Full Moon':'🌕','Waning Gibbous':'🌖','Last Quarter':'🌗','Waning Crescent':'🌘'};
+      const illum = Math.round((1 - Math.cos(2 * Math.PI * pct)) / 2 * 100);
+      return { name, emoji: emojis[name], illumination: illum, dayInCycle: Math.round(dayInCycle * 10) / 10 };
+    }
+
+    function findNext(start, targetName) {
+      for (let i = 1; i <= 30; i++) {
+        const d = new Date(start.getTime() + i * 86400000);
+        if (getPhase(d).name === targetName) return d;
+      }
+      return null;
+    }
+
+    // Current phase
+    const now = new Date();
+    const current = getPhase(now);
+    document.getElementById('phase-emoji').textContent = current.emoji;
+    document.getElementById('phase-name').textContent = current.name;
+    document.getElementById('phase-illum').textContent = current.illumination + '%';
+    document.getElementById('phase-day').textContent = current.dayInCycle;
+    const tip = tips[current.name];
+    document.getElementById('phase-tip').textContent = tip.tip;
+    document.getElementById('phase-action').textContent = '✨ Best actions: ' + tip.action;
+
+    // Next key phases
+    const nextNm = findNext(now, 'New Moon');
+    const nextFm = findNext(now, 'Full Moon');
+    const fmt = d => d ? d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
+    document.getElementById('next-new').textContent = fmt(nextNm);
+    document.getElementById('next-full').textContent = fmt(nextFm);
+
+    // Calendar
+    let calYear = now.getFullYear();
+    let calMonth = now.getMonth();
+
+    function renderCalendar() {
+      const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      document.getElementById('calendar-title').textContent = months[calMonth] + ' ' + calYear;
+      const grid = document.getElementById('calendar-grid');
+      grid.innerHTML = '';
+      // day headers
+      ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(d => {
+        const h = document.createElement('div');
+        h.className = 'text-[#9B8CB8] font-semibold py-2';
+        h.textContent = d;
+        grid.appendChild(h);
+      });
+      const firstDay = new Date(calYear, calMonth, 1).getDay();
+      const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+      // blank days
+      for (let i = 0; i < firstDay; i++) {
+        const b = document.createElement('div');
+        grid.appendChild(b);
+      }
+      for (let d = 1; d <= daysInMonth; d++) {
+        const date = new Date(calYear, calMonth, d, 12, 0);
+        const phase = getPhase(date);
+        const cell = document.createElement('div');
+        cell.className = 'py-2 rounded-lg hover:bg-purple-900/30 cursor-default';
+        const isToday = d === now.getDate() && calMonth === now.getMonth() && calYear === now.getFullYear();
+        if (isToday) cell.className += ' bg-purple-900/50 ring-1 ring-purple-500';
+        cell.innerHTML = '<div class="font-semibold text-purple-200">' + d + '</div><div class="text-lg">' + phase.emoji + '</div>';
+        cell.title = phase.name;
+        grid.appendChild(cell);
+      }
+    }
+
+    renderCalendar();
+    document.getElementById('prev-month').addEventListener('click', () => { calMonth--; if (calMonth < 0) { calMonth = 11; calYear--; } renderCalendar(); });
+    document.getElementById('next-month').addEventListener('click', () => { calMonth++; if (calMonth > 11) { calMonth = 0; calYear++; } renderCalendar(); });
+  </script>
+</BaseLayout>

@@ -1,0 +1,153 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Free Vision Board Maker — Create Your Digital Vision Board | ManifestKit" description="Create a beautiful digital vision board to visualize your dreams and goals. Free online vision board maker — no sign up required.">
+  <section class="max-w-4xl mx-auto">
+    <h1 class="text-3xl md:text-4xl font-bold text-center mb-2">
+      <span class="bg-gradient-to-r from-pink-400 to-amber-400 bg-clip-text text-transparent">🎯 Vision Board Maker</span>
+    </h1>
+    <p class="text-center text-[#9B8CB8] mb-8">Visualize your dreams, create your board, and manifest your ideal life.</p>
+
+    <!-- Board Area -->
+    <div id="board" class="w-full min-h-[400px] p-6 rounded-2xl bg-[#1A1333] border border-purple-800/40 border-dashed grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+      <div id="add-card" class="flex items-center justify-center rounded-xl border-2 border-dashed border-purple-700/30 hover:border-purple-500/50 cursor-pointer transition-all min-h-[140px]">
+        <span class="text-4xl text-purple-600">+</span>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex justify-center gap-4 mb-8">
+      <button id="btn-add" class="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-semibold transition-all">+ Add Wish</button>
+      <button id="btn-clear" class="px-6 py-3 rounded-xl bg-[#1A1333] border border-purple-700/50 text-purple-300 font-semibold hover:border-red-500/50 hover:text-red-300 transition-all">🗑 Clear All</button>
+      <button id="btn-screenshot" class="px-6 py-3 rounded-xl bg-[#1A1333] border border-purple-700/50 text-purple-300 font-semibold hover:border-amber-500/50 hover:text-amber-300 transition-all">📸 Screenshot Tip</button>
+    </div>
+
+    <!-- Add Wish Modal -->
+    <div id="modal" class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center hidden">
+      <div class="bg-[#1A1333] rounded-2xl p-6 max-w-md w-full mx-4 border border-purple-700/50">
+        <h2 class="text-lg font-bold text-purple-300 mb-4">✨ Add Your Wish</h2>
+        <div class="space-y-4">
+          <input id="wish-text" type="text" placeholder="Your wish or goal (e.g. 'Dream vacation to Bali')" maxlength="80"
+            class="w-full px-4 py-3 rounded-xl bg-[#0F0A1E] border border-purple-700/50 focus:border-purple-500 text-purple-200 placeholder-purple-700 outline-none" />
+          <select id="wish-emoji" class="w-full px-4 py-3 rounded-xl bg-[#0F0A1E] border border-purple-700/50 text-purple-200 outline-none">
+            <option value="💰">💰 Abundance</option>
+            <option value="💕">💕 Love</option>
+            <option value="🏠">🏠 Home</option>
+            <option value="🚗">🚗 Car</option>
+            <option value="✈️">✈️ Travel</option>
+            <option value="🎓">🎓 Education</option>
+            <option value="💼">💼 Career</option>
+            <option value="💪">💪 Health</option>
+            <option value="🏆">🏆 Success</option>
+            <option value="🎨">🎨 Creativity</option>
+            <option value="🧘">🧘 Peace</option>
+            <option value="👤">👤 Self</option>
+          </select>
+          <div class="flex gap-3">
+            <button id="modal-save" class="flex-1 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-amber-600 text-white font-semibold">💜 Add to Board</button>
+            <button id="modal-cancel" class="px-6 py-3 rounded-xl bg-[#0F0A1E] border border-purple-700/50 text-purple-300">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEO Content -->
+    <article class="space-y-4 text-[#9B8CB8] text-sm leading-relaxed">
+      <h2 class="text-xl font-semibold text-purple-300">How Vision Boards Help You Manifest</h2>
+      <p>A vision board is a powerful visualization tool. By placing images and words that represent your goals where you can see them daily, you program your subconscious mind to notice opportunities aligned with your desires.</p>
+      <h3 class="text-lg font-semibold text-purple-300">Tips for an Effective Vision Board</h3>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li>Be specific — "I earn $10K/month" works better than "I want money"</li>
+        <li>Use present tense — your wishes are already becoming real</li>
+        <li>Feel the emotion — imagine how it feels to have your wish NOW</li>
+        <li>Look at your board every morning and evening for 30 seconds</li>
+        <li>Update it as your desires evolve and grow</li>
+      </ul>
+      <p>💡 <strong class="text-purple-200">Screenshot tip:</strong> Take a screenshot of your board and set it as your phone wallpaper for constant visualization!</p>
+    </article>
+
+    <!-- Ad Slot -->
+    <div class="mt-8 text-center">
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6056859786205773" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    </div>
+  </section>
+
+  <script>
+    const board = document.getElementById('board');
+    const addCard = document.getElementById('add-card');
+    const modal = document.getElementById('modal');
+    const wishText = document.getElementById('wish-text');
+    const wishEmoji = document.getElementById('wish-emoji');
+    const btnAdd = document.getElementById('btn-add');
+    const btnClear = document.getElementById('btn-clear');
+    const btnScreenshot = document.getElementById('btn-screenshot');
+
+    let wishes = JSON.parse(localStorage.getItem('mk_wishes') || '[]');
+
+    function createWishCard(wish) {
+      const card = document.createElement('div');
+      card.className = 'p-4 rounded-xl bg-gradient-to-br from-purple-900/40 to-indigo-900/40 border border-purple-700/30 hover:border-amber-500/30 transition-all relative group min-h-[140px] flex flex-col items-center justify-center text-center';
+      card.innerHTML = '<div class="text-4xl mb-2">' + wish.emoji + '</div><p class="text-purple-200 text-sm font-medium">' + escapeHtml(wish.text) + '</p><button class="absolute top-2 right-2 text-red-400/50 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity text-lg" data-id="' + wish.id + '">×</button>';
+      card.querySelector('button').addEventListener('click', () => removeWish(wish.id));
+      board.insertBefore(card, addCard);
+    }
+
+    function escapeHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+    function renderBoard() {
+      board.querySelectorAll('.group').forEach(c => c.remove());
+      wishes.forEach(createWishCard);
+    }
+
+    function addWish(text, emoji) {
+      const wish = { id: Date.now(), text, emoji };
+      wishes.push(wish);
+      saveBoard();
+      createWishCard(wish);
+    }
+
+    function removeWish(id) {
+      wishes = wishes.filter(w => w.id !== id);
+      saveBoard();
+      renderBoard();
+    }
+
+    function saveBoard() { localStorage.setItem('mk_wishes', JSON.stringify(wishes)); }
+
+    addCard.addEventListener('click', () => { modal.classList.remove('hidden'); wishText.value = ''; wishText.focus(); });
+    btnAdd.addEventListener('click', () => { modal.classList.remove('hidden'); wishText.value = ''; wishText.focus(); });
+
+    document.getElementById('modal-save').addEventListener('click', () => {
+      const text = wishText.value.trim();
+      if (!text) return;
+      addWish(text, wishEmoji.value);
+      modal.classList.add('hidden');
+    });
+
+    document.getElementById('modal-cancel').addEventListener('click', () => { modal.classList.add('hidden'); });
+
+    wishText.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('modal-save').click(); });
+
+    btnClear.addEventListener('click', () => {
+      if (wishes.length === 0) return;
+      if (confirm('Clear all wishes from your vision board?')) { wishes = []; saveBoard(); renderBoard(); }
+    });
+
+    btnScreenshot.addEventListener('click', () => { alert('💡 Screenshot Tip:\n\n1. Press Windows+Shift+S (or Cmd+Shift+4 on Mac)\n2. Select your vision board\n3. Set it as your phone/computer wallpaper\n4. See your dreams every day! ✨'); });
+
+    renderBoard();
+
+    // Seed some default wishes if empty
+    if (wishes.length === 0) {
+      const defaults = [
+        { emoji: '💰', text: 'Financial Freedom' },
+        { emoji: '💕', text: 'Soulmate Connection' },
+        { emoji: '✈️', text: 'Dream Vacation' },
+        { emoji: '🏆', text: 'Career Breakthrough' },
+        { emoji: '🏠', text: 'Dream Home' },
+      ];
+      defaults.forEach(d => addWish(d.text, d.emoji));
+    }
+  </script>
+</BaseLayout>

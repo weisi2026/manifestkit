@@ -1,0 +1,101 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { createSupabaseServer } from '../../lib/supabase-server';
+import type { SavedAffirmation } from '../../lib/supabase';
+
+const supabase = createSupabaseServer(Astro.cookies, Astro.request.headers);
+
+let affirmations: SavedAffirmation[] = [];
+
+const { data: { user } } = await supabase.auth.getUser();
+if (user) {
+  const { data } = await supabase
+    .from('saved_affirmations')
+    .select('*')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false });
+  affirmations = (data as SavedAffirmation[]) || [];
+}
+---
+
+<BaseLayout title="Saved Affirmations | ManifestKit" description="Your saved affirmations collection">
+  <div class="max-w-4xl mx-auto">
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="text-3xl font-bold text-amber-400">✨ Saved Affirmations</h1>
+        <p class="text-purple-300 mt-1">Your personal collection of empowering affirmations</p>
+      </div>
+      <a href="/affirmation-generator" class="px-4 py-2 bg-purple-600 text-white text-sm rounded-lg hover:bg-purple-700 transition-colors">
+        Generate New
+      </a>
+    </div>
+
+    {affirmations.length === 0 ? (
+      <div class="text-center py-16 bg-[#1A1333] rounded-xl border border-purple-800/30">
+        <p class="text-5xl mb-4">🪞</p>
+        <p class="text-purple-400/60 text-lg">No saved affirmations yet.</p>
+        <p class="text-purple-400/40 text-sm mt-2">Go to the Affirmation Generator and save your favorites!</p>
+        <a href="/affirmation-generator" class="inline-block mt-6 px-6 py-3 bg-amber-500 text-purple-900 font-semibold rounded-lg hover:bg-amber-400 transition-colors">
+          ✨ Generate Affirmations
+        </a>
+      </div>
+    ) : (
+      <div class="space-y-3">
+        {affirmations.map((aff) => (
+          <div class="bg-[#1A1333] rounded-xl p-5 border border-purple-800/30 hover:border-amber-400/30 transition-all" id={`aff-${aff.id}`}>
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex-1">
+                <p class="text-lg text-purple-100 italic leading-relaxed">"{aff.text}"</p>
+                {aff.category && (
+                  <span class="inline-block mt-2 text-xs bg-purple-900/50 text-purple-300 px-2 py-0.5 rounded-full">{aff.category}</span>
+                )}
+              </div>
+              <div class="flex gap-2 flex-shrink-0">
+                <button class="toggle-favorite text-sm px-3 py-1 rounded-lg bg-amber-900/30 hover:bg-amber-800/40 text-amber-400 transition-colors"
+                  data-id={aff.id} data-favorite={aff.is_favorite}>
+                  {aff.is_favorite ? '★' : '☆'}
+                </button>
+                <button class="delete-affirmation text-sm px-3 py-1 rounded-lg bg-red-900/30 hover:bg-red-800/40 text-red-400 transition-colors"
+                  data-id={aff.id}>
+                  ✕
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+
+  <script>
+    import { supabase } from '../../lib/supabase';
+
+    // Toggle favorite
+    document.querySelectorAll('.toggle-favorite').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.id;
+        const current = btn.dataset.favorite === 'true';
+        const { error } = await supabase
+          .from('saved_affirmations')
+          .update({ is_favorite: !current })
+          .eq('id', id);
+        if (!error) window.location.reload();
+      });
+    });
+
+    // Delete affirmation
+    document.querySelectorAll('.delete-affirmation').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (!confirm('Delete this affirmation?')) return;
+        const id = btn.dataset.id;
+        const { error } = await supabase
+          .from('saved_affirmations')
+          .delete()
+          .eq('id', id);
+        if (!error) {
+          document.getElementById(`aff-${id}`)?.remove();
+        }
+      });
+    });
+  </script>
+</BaseLayout>

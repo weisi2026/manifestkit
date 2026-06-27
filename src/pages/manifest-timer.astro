@@ -1,0 +1,230 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Free Manifestation Timer — Set Intentions & Track Progress | ManifestKit" description="Set your intentions, start a manifestation timer, and track your progress with a beautiful visual countdown. Free online manifestation tool.">
+  <section class="max-w-2xl mx-auto">
+    <h1 class="text-3xl md:text-4xl font-bold text-center mb-2">
+      <span class="bg-gradient-to-r from-amber-400 to-purple-400 bg-clip-text text-transparent">⏳ Manifestation Timer</span>
+    </h1>
+    <p class="text-center text-[#9B8CB8] mb-8">Set your intention, start the timer, and focus your energy on what you desire.</p>
+
+    <!-- Timer Ring -->
+    <div class="flex justify-center mb-8">
+      <div class="relative w-64 h-64">
+        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="54" stroke="#2D1B4E" stroke-width="8" fill="none" />
+          <circle id="progress-ring" cx="60" cy="60" r="54" stroke="url(#gradient)" stroke-width="8" fill="none" stroke-linecap="round" stroke-dasharray="339.292" stroke-dashoffset="339.292" />
+          <defs><linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#7C3AED"/><stop offset="100%" stop-color="#D4AF37"/></linearGradient></defs>
+        </svg>
+        <div class="absolute inset-0 flex flex-col items-center justify-center">
+          <div id="timer-display" class="text-5xl font-bold text-purple-200 font-mono">17:00</div>
+          <div id="timer-intention" class="text-sm text-[#9B8CB8] mt-2 text-center px-4 truncate max-w-[200px]">Set your intention...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Intention Input -->
+    <div class="mb-6">
+      <label class="block text-sm text-[#9B8CB8] mb-2">Your Intention / Desire</label>
+      <input id="intention-input" type="text" placeholder="e.g. I am manifesting financial abundance..." maxlength="100"
+        class="w-full px-4 py-3 rounded-xl bg-[#1A1333] border border-purple-700/50 focus:border-purple-500 text-purple-200 placeholder-purple-700 outline-none transition-colors" />
+    </div>
+
+    <!-- Duration Selector -->
+    <div class="mb-6">
+      <label class="block text-sm text-[#9B8CB8] mb-2">Focus Duration</label>
+      <div class="flex gap-3 flex-wrap">
+        <button class="dur-btn px-4 py-2 rounded-lg bg-[#1A1333] border border-purple-700/50 text-purple-300 hover:border-purple-500 hover:text-amber-300 transition-all" data-secs="60">1 min</button>
+        <button class="dur-btn px-4 py-2 rounded-lg bg-[#1A1333] border border-amber-500/50 text-amber-300 transition-all" data-secs="300">5 min</button>
+        <button class="dur-btn px-4 py-2 rounded-lg bg-[#1A1333] border border-purple-700/50 text-purple-300 hover:border-purple-500 hover:text-amber-300 transition-all" data-secs="600">10 min</button>
+        <button class="dur-btn px-4 py-2 rounded-lg bg-[#1A1333] border border-purple-700/50 text-purple-300 hover:border-purple-500 hover:text-amber-300 transition-all" data-secs="900">15 min</button>
+        <button class="dur-btn px-4 py-2 rounded-lg bg-[#1A1333] border border-purple-700/50 text-purple-300 hover:border-purple-500 hover:text-amber-300 transition-all" data-secs="1020">17 min ✨</button>
+        <button class="dur-btn px-4 py-2 rounded-lg bg-[#1A1333] border border-purple-700/50 text-purple-300 hover:border-purple-500 hover:text-amber-300 transition-all" data-secs="1800">30 min</button>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="flex justify-center gap-4 mb-8">
+      <button id="btn-start" class="px-8 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-amber-600 hover:from-purple-500 hover:to-amber-500 text-white font-bold text-lg transition-all">▶ Start</button>
+      <button id="btn-pause" class="px-6 py-3 rounded-xl bg-[#1A1333] border border-purple-700/50 text-purple-300 font-semibold hidden">⏸ Pause</button>
+      <button id="btn-reset" class="px-6 py-3 rounded-xl bg-[#1A1333] border border-purple-700/50 text-purple-300 font-semibold hidden">↺ Reset</button>
+    </div>
+
+    <!-- Save to Wish Journal -->
+    <div id="save-wish-section" class="p-4 rounded-xl bg-[#1A1333] border border-amber-800/30 mb-4 hidden">
+      <div class="flex items-center gap-3">
+        <span class="text-2xl">📝</span>
+        <div class="flex-1">
+          <p class="text-sm text-purple-200">Save this session to your Wish Journal?</p>
+          <p id="save-wish-intention" class="text-xs text-purple-400 mt-1"></p>
+        </div>
+        <button id="btn-save-wish" class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white text-sm rounded-lg transition-colors">Save</button>
+      </div>
+    </div>
+
+    <!-- Session Log -->
+    <div class="p-4 rounded-xl bg-[#1A1333] border border-purple-800/30">
+      <h3 class="text-sm font-semibold text-purple-300 mb-2">📊 Today's Sessions</h3>
+      <div id="session-log" class="text-sm text-[#9B8CB8] space-y-1"></div>
+    </div>
+
+    <!-- SEO Content -->
+    <article class="mt-10 space-y-4 text-[#9B8CB8] text-sm leading-relaxed">
+      <h2 class="text-xl font-semibold text-purple-300">What Is the 17-Second Manifestation Technique?</h2>
+      <p>Abraham-Hicks teaches that holding a pure thought for just <strong class="text-purple-200">17 seconds</strong> sets its vibration into motion. When you focus with intention and emotion, the Universe begins aligning circumstances to match your desire.</p>
+      <p>The 68-second method extends this — holding a thought for <strong class="text-purple-200">68 seconds</strong> (4×17) amplifies it to the point of manifestation. Our 17-minute timer is perfect for deep, focused intention-setting sessions.</p>
+      <h3 class="text-lg font-semibold text-purple-300">How to Use This Timer</h3>
+      <ol class="list-decimal list-inside space-y-2 ml-4">
+        <li>Type your intention in the present tense (e.g., "I am abundant")</li>
+        <li>Choose your focus duration (17 min for deep work ✨)</li>
+        <li>Click Start and close your eyes</li>
+        <li>Feel the emotion of having your desire NOW</li>
+        <li>Return with gratitude when the timer completes</li>
+      </ol>
+    </article>
+
+    <!-- Ad Slot -->
+    <div class="mt-8 text-center">
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6056859786205773" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    </div>
+  </section>
+
+  <script>
+    const ring = document.getElementById('progress-ring');
+    const display = document.getElementById('timer-display');
+    const intentionLabel = document.getElementById('timer-intention');
+    const intentionInput = document.getElementById('intention-input');
+    const btnStart = document.getElementById('btn-start');
+    const btnPause = document.getElementById('btn-pause');
+    const btnReset = document.getElementById('btn-reset');
+    const sessionLog = document.getElementById('session-log');
+
+    const CIRCUMFERENCE = 2 * Math.PI * 54; // 339.292
+    let totalSecs = 300;
+    let remaining = 300;
+    let interval = null;
+    let isRunning = false;
+    let sessions = JSON.parse(localStorage.getItem('mk_sessions') || '[]');
+
+    // Load saved intention
+    intentionInput.value = localStorage.getItem('mk_intention') || '';
+    intentionLabel.textContent = intentionInput.value || 'Set your intention...';
+    intentionInput.addEventListener('input', () => {
+      intentionLabel.textContent = intentionInput.value || 'Set your intention...';
+      localStorage.setItem('mk_intention', intentionInput.value);
+    });
+
+    // Duration buttons
+    document.querySelectorAll('.dur-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (isRunning) return;
+        document.querySelectorAll('.dur-btn').forEach(b => { b.classList.remove('border-amber-500/50','text-amber-300'); b.classList.add('border-purple-700/50','text-purple-300'); });
+        btn.classList.remove('border-purple-700/50','text-purple-300');
+        btn.classList.add('border-amber-500/50','text-amber-300');
+        totalSecs = parseInt(btn.dataset.secs);
+        remaining = totalSecs;
+        updateDisplay();
+      });
+    });
+
+    function formatTime(s) {
+      const m = Math.floor(s / 60);
+      const sec = s % 60;
+      return (m < 10 ? '0' : '') + m + ':' + (sec < 10 ? '0' : '') + sec;
+    }
+
+    function updateDisplay() {
+      display.textContent = formatTime(remaining);
+      const progress = 1 - (remaining / totalSecs);
+      ring.style.strokeDashoffset = CIRCUMFERENCE * (1 - progress);
+    }
+
+    function startTimer() {
+      if (remaining <= 0) return;
+      isRunning = true;
+      btnStart.classList.add('hidden');
+      btnPause.classList.remove('hidden');
+      btnReset.classList.remove('hidden');
+      interval = setInterval(() => {
+        remaining--;
+        updateDisplay();
+        if (remaining <= 0) {
+          clearInterval(interval);
+          isRunning = false;
+          btnPause.classList.add('hidden');
+          // Log session
+          const log = { intention: intentionInput.value, duration: totalSecs, date: new Date().toISOString() };
+          sessions.push(log);
+          localStorage.setItem('mk_sessions', JSON.stringify(sessions.slice(-20)));
+          renderLog();
+        // Show save to wish journal prompt
+        const saveWishSection = document.getElementById('save-wish-section');
+        const saveWishIntention = document.getElementById('save-wish-intention');
+        if (intentionInput.value) {
+          saveWishIntention.textContent = '✨ ' + intentionInput.value;
+          saveWishSection.classList.remove('hidden');
+        }
+        // Alert
+        display.textContent = '✨ Done!';
+        intentionLabel.textContent = 'Your intention has been released to the Universe 💜';
+        }
+      }, 1000);
+    }
+
+    btnStart.addEventListener('click', startTimer);
+    btnPause.addEventListener('click', () => {
+      clearInterval(interval);
+      isRunning = false;
+      btnPause.classList.add('hidden');
+      btnStart.classList.remove('hidden');
+      btnStart.textContent = '▶ Resume';
+    });
+    btnReset.addEventListener('click', () => {
+      clearInterval(interval);
+      isRunning = false;
+      remaining = totalSecs;
+      updateDisplay();
+      btnPause.classList.add('hidden');
+      btnReset.classList.add('hidden');
+      btnStart.classList.remove('hidden');
+      btnStart.textContent = '▶ Start';
+    });
+
+    // Save wish to Supabase
+    document.getElementById('btn-save-wish')?.addEventListener('click', async () => {
+      const intention = intentionInput.value;
+      if (!intention) return;
+      const { supabase } = await import('../lib/supabase');
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        window.location.href = '/login';
+        return;
+      }
+      const { error } = await supabase.from('wish_journal').insert({
+        title: intention,
+        category: 'spiritual',
+        description: 'Manifestation timer session - ' + formatTime(totalSecs)
+      });
+      if (!error) {
+        document.getElementById('btn-save-wish').textContent = '✅ Saved!';
+        document.getElementById('save-wish-section').classList.add('opacity-50');
+      } else {
+        alert('Failed to save: ' + error.message);
+      }
+    });
+
+    function renderLog() {
+      const today = new Date().toDateString();
+      const todaySessions = sessions.filter(s => new Date(s.date).toDateString() === today);
+      if (todaySessions.length === 0) { sessionLog.innerHTML = '<p>No sessions yet today. Start your first one! ✨</p>'; return; }
+      sessionLog.innerHTML = todaySessions.map(s => {
+        const t = new Date(s.date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        return '<p>⏳ ' + formatTime(s.duration) + ' — ' + (s.intention || 'No intention set') + ' <span class="text-[#9B8CB8]/50">(' + t + ')</span></p>';
+      }).join('');
+    }
+
+    updateDisplay();
+    renderLog();
+  </script>
+</BaseLayout>

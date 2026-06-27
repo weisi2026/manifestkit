@@ -1,0 +1,85 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="ManifestKit — Free Manifestation Tools & Spiritual Toolkit">
+  <!-- Hero -->
+  <section class="text-center py-12 md:py-20">
+    <h1 class="text-4xl md:text-6xl font-bold mb-4">
+      <span class="bg-gradient-to-r from-purple-400 via-pink-400 to-amber-400 bg-clip-text text-transparent">
+        Manifest Your Dreams
+      </span>
+    </h1>
+    <p class="text-lg md:text-xl text-[#9B8CB8] max-w-2xl mx-auto mb-8">
+      Free spiritual tools to set intentions, generate affirmations, visualize your goals, and align with lunar cycles. No sign-up required.
+    </p>
+    <div class="flex flex-wrap justify-center gap-4 text-sm">
+      <span class="px-3 py-1 rounded-full bg-purple-900/50 border border-purple-700/50">✨ 100% Free</span>
+      <span class="px-3 py-1 rounded-full bg-purple-900/50 border border-purple-700/50">🔒 No Sign-up</span>
+      <span class="px-3 py-1 rounded-full bg-purple-900/50 border border-purple-700/50">💜 Works on Phone</span>
+    </div>
+  </section>
+
+  <!-- Tool Cards -->
+  <section class="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+    <!-- Manifest Timer -->
+    <a href="/manifest-timer" class="group block p-6 rounded-2xl bg-[#1A1333] border border-purple-800/40 hover:border-purple-500/60 hover:shadow-lg hover:shadow-purple-900/30 transition-all">
+      <div class="text-4xl mb-3">⏳</div>
+      <h2 class="text-xl font-semibold text-purple-300 group-hover:text-amber-400 transition-colors">Manifestation Timer</h2>
+      <p class="text-[#9B8CB8] mt-2 text-sm">Set your intentions, track progress with a visual countdown ring. Watch your desires unfold.</p>
+    </a>
+
+    <!-- Affirmation Generator -->
+    <a href="/affirmation-generator" class="group block p-6 rounded-2xl bg-[#1A1333] border border-purple-800/40 hover:border-purple-500/60 hover:shadow-lg hover:shadow-purple-900/30 transition-all">
+      <div class="text-4xl mb-3">✨</div>
+      <h2 class="text-xl font-semibold text-purple-300 group-hover:text-amber-400 transition-colors">Affirmation Generator</h2>
+      <p class="text-[#9B8CB8] mt-2 text-sm">Generate personalized daily affirmations. Choose your focus — abundance, love, health, and more.</p>
+    </a>
+
+    <!-- Vision Board -->
+    <a href="/vision-board" class="group block p-6 rounded-2xl bg-[#1A1333] border border-purple-800/40 hover:border-purple-500/60 hover:shadow-lg hover:shadow-purple-900/30 transition-all">
+      <div class="text-4xl mb-3">🎯</div>
+      <h2 class="text-xl font-semibold text-purple-300 group-hover:text-amber-400 transition-colors">Vision Board Maker</h2>
+      <p class="text-[#9B8CB8] mt-2 text-sm">Create and customize your digital vision board. Visualize your dreams, save and export.</p>
+    </a>
+
+    <!-- Moon Phase -->
+    <a href="/moon-phase" class="group block p-6 rounded-2xl bg-[#1A1333] border border-purple-800/40 hover:border-purple-500/60 hover:shadow-lg hover:shadow-purple-900/30 transition-all">
+      <div class="text-4xl mb-3">🌙</div>
+      <h2 class="text-xl font-semibold text-purple-300 group-hover:text-amber-400 transition-colors">Moon Phase Calendar</h2>
+      <p class="text-[#9B8CB8] mt-2 text-sm">Track lunar cycles, get manifestation tips for each moon phase. Align with cosmic energy.</p>
+    </a>
+  </section>
+
+  <!-- Today's Moon (mini) -->
+  <section class="text-center mt-12 py-8 border-t border-purple-900/30">
+    <p class="text-[#9B8CB8] text-sm">🌙 Today's Moon Phase</p>
+    <p id="today-moon" class="text-2xl mt-1">Loading...</p>
+  </section>
+
+  <!-- Ad Slot -->
+  <div class="mt-8 text-center">
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6056859786205773" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+  </div>
+
+  <script>
+    // Simple moon phase calc for homepage
+    function getMoonPhase() {
+      const known = new Date(2000, 0, 6, 18, 14); // known new moon
+      const now = new Date();
+      const cycle = 29.53058867;
+      const diff = (now.getTime() - known.getTime()) / 86400000;
+      const phase = ((diff % cycle) + cycle) % cycle;
+      const pct = phase / cycle;
+      if (pct < 0.03 || pct > 0.97) return '🌑 New Moon';
+      if (pct < 0.22) return '🌒 Waxing Crescent';
+      if (pct < 0.28) return '🌓 First Quarter';
+      if (pct < 0.47) return '🌔 Waxing Gibbous';
+      if (pct < 0.53) return '🌕 Full Moon';
+      if (pct < 0.72) return '🌖 Waning Gibbous';
+      if (pct < 0.78) return '🌗 Last Quarter';
+      return '🌘 Waning Crescent';
+    }
+    document.getElementById('today-moon')!.textContent = getMoonPhase();
+  </script>
+</BaseLayout>

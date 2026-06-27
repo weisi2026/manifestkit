@@ -1,0 +1,87 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { createSupabaseServer } from '../../lib/supabase-server';
+
+const supabase = createSupabaseServer(Astro.cookies, Astro.request.headers);
+
+let userEmail = 'User';
+let wishCount = 0;
+let affirmationCount = 0;
+
+{
+  const { data: { user } } = await supabase.auth.getUser();
+  if (user) {
+    userEmail = user.email || user.user_metadata?.full_name || 'User';
+    
+    // Get counts
+    const { count: wc } = await supabase
+      .from('wish_journal')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', user.id);
+    wishCount = wc || 0;
+    
+    const { count: ac } = await supabase
+      .from('saved_affirmations')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', user.id);
+    affirmationCount = ac || 0;
+  }
+}
+---
+
+<BaseLayout title="Dashboard | ManifestKit" description="Your manifestation dashboard">
+  <div class="max-w-4xl mx-auto">
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-amber-400">Welcome back, {userEmail}!</h1>
+      <p class="text-purple-300 mt-1">Track your manifestation journey</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <a href="/dashboard/wish-journal" class="bg-[#1A1333] rounded-xl p-6 border border-purple-800/30 hover:border-purple-600/50 transition-all hover:scale-[1.02]">
+        <div class="flex items-center gap-4">
+          <span class="text-4xl">📝</span>
+          <div>
+            <h2 class="text-lg font-semibold text-white">Wish Journal</h2>
+            <p class="text-3xl font-bold text-purple-400 mt-1">{wishCount}</p>
+            <p class="text-sm text-purple-300">wishes recorded</p>
+          </div>
+        </div>
+      </a>
+
+      <a href="/dashboard/affirmations" class="bg-[#1A1333] rounded-xl p-6 border border-purple-800/30 hover:border-purple-600/50 transition-all hover:scale-[1.02]">
+        <div class="flex items-center gap-4">
+          <span class="text-4xl">✨</span>
+          <div>
+            <h2 class="text-lg font-semibold text-white">Saved Affirmations</h2>
+            <p class="text-3xl font-bold text-purple-400 mt-1">{affirmationCount}</p>
+            <p class="text-sm text-purple-300">affirmations saved</p>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="bg-[#1A1333] rounded-xl p-6 border border-purple-800/30">
+      <h2 class="text-lg font-semibold text-white mb-4">Quick Actions</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <a href="/dashboard/wish-journal#new" class="flex items-center gap-3 p-4 rounded-lg bg-purple-900/30 hover:bg-purple-800/40 transition-colors">
+          <span class="text-2xl">➕</span>
+          <span class="text-sm text-purple-200">Add a New Wish</span>
+        </a>
+        <a href="/affirmation-generator" class="flex items-center gap-3 p-4 rounded-lg bg-purple-900/30 hover:bg-purple-800/40 transition-colors">
+          <span class="text-2xl">✨</span>
+          <span class="text-sm text-purple-200">Generate Affirmations</span>
+        </a>
+        <a href="/manifest-timer" class="flex items-center gap-3 p-4 rounded-lg bg-purple-900/30 hover:bg-purple-800/40 transition-colors">
+          <span class="text-2xl">⏳</span>
+          <span class="text-sm text-purple-200">Start a Timer</span>
+        </a>
+        <a href="/vision-board" class="flex items-center gap-3 p-4 rounded-lg bg-purple-900/30 hover:bg-purple-800/40 transition-colors">
+          <span class="text-2xl">🎯</span>
+          <span class="text-sm text-purple-200">Vision Board</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

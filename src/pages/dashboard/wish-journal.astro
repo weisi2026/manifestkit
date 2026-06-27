@@ -1,0 +1,177 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { createSupabaseServer } from '../../lib/supabase-server';
+import type { WishEntry } from '../../lib/supabase';
+
+const supabase = createSupabaseServer(Astro.cookies, Astro.request.headers);
+
+let wishes: WishEntry[] = [];
+let userId: string | null = null;
+
+const { data: { user } } = await supabase.auth.getUser();
+if (user) {
+  userId = user.id;
+  const { data } = await supabase
+    .from('wish_journal')
+    .select('*')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false });
+  wishes = (data as WishEntry[]) || [];
+}
+
+const categories = [
+  { value: 'health', label: 'Health', emoji: '💪' },
+  { value: 'wealth', label: 'Wealth', emoji: '💰' },
+  { value: 'relationship', label: 'Relationship', emoji: '💕' },
+  { value: 'career', label: 'Career', emoji: '💼' },
+  { value: 'spiritual', label: 'Spiritual', emoji: '🕊️' },
+  { value: 'other', label: 'Other', emoji: '🌟' },
+];
+---
+
+<BaseLayout title="Wish Journal | ManifestKit" description="Track your wishes and manifestation journey">
+  <div class="max-w-4xl mx-auto">
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="text-3xl font-bold text-amber-400">📝 Wish Journal</h1>
+        <p class="text-purple-300 mt-1">Record and track your manifestations</p>
+      </div>
+    </div>
+
+    <!-- New Wish Form -->
+    <div id="new-wish-form" class="bg-[#1A1333] rounded-xl p-6 border border-purple-800/30 mb-8">
+      <h2 class="text-lg font-semibold text-white mb-4">New Wish</h2>
+      <form id="wish-form" class="space-y-4">
+        <div>
+          <label for="title" class="block text-sm text-purple-300 mb-1">What do you wish to manifest?</label>
+          <input type="text" id="title" name="title" required
+            class="w-full px-4 py-2 bg-[#0F0A1E] border border-purple-800/30 rounded-lg text-white placeholder-purple-400/50 focus:border-amber-400/50 focus:outline-none"
+            placeholder="I manifest..." />
+        </div>
+        <div>
+          <label for="description" class="block text-sm text-purple-300 mb-1">Details (optional)</label>
+          <textarea id="description" name="description" rows="3"
+            class="w-full px-4 py-2 bg-[#0F0A1E] border border-purple-800/30 rounded-lg text-white placeholder-purple-400/50 focus:border-amber-400/50 focus:outline-none"
+            placeholder="Describe your wish in detail..."></textarea>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label for="category" class="block text-sm text-purple-300 mb-1">Category</label>
+            <select id="category" name="category"
+              class="w-full px-4 py-2 bg-[#0F0A1E] border border-purple-800/30 rounded-lg text-white focus:border-amber-400/50 focus:outline-none">
+              {categories.map(c => (
+                <option value={c.value}>{c.emoji} {c.label}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label for="target_date" class="block text-sm text-purple-300 mb-1">Target Date (optional)</label>
+            <input type="date" id="target_date" name="target_date"
+              class="w-full px-4 py-2 bg-[#0F0A1E] border border-purple-800/30 rounded-lg text-white focus:border-amber-400/50 focus:outline-none" />
+          </div>
+        </div>
+        <button type="submit"
+          class="px-6 py-2 bg-amber-500 text-purple-900 font-semibold rounded-lg hover:bg-amber-400 transition-colors">
+          ✨ Set Intention
+        </button>
+      </form>
+    </div>
+
+    <!-- Wish List -->
+    <div class="space-y-4">
+      {wishes.length === 0 ? (
+        <div class="text-center py-12 text-purple-400/60">
+          <p class="text-4xl mb-4">🌟</p>
+          <p>No wishes yet. Start manifesting!</p>
+        </div>
+      ) : (
+        wishes.map((wish) => (
+          <div class="bg-[#1A1333] rounded-xl p-5 border border-purple-800/30 hover:border-amber-400/30 transition-all" id={`wish-${wish.id}`}>
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="text-sm">{categories.find(c => c.value === wish.category)?.emoji} {categories.find(c => c.value === wish.category)?.label || wish.category}</span>
+                  {wish.is_fulfilled && <span class="text-xs bg-green-900/50 text-green-400 px-2 py-0.5 rounded-full">✓ Fulfilled</span>}
+                </div>
+                <h3 class="text-lg font-semibold text-white">{wish.title}</h3>
+                {wish.description && <p class="text-purple-300 text-sm mt-1">{wish.description}</p>}
+                {wish.target_date && <p class="text-purple-400/60 text-xs mt-2">Target: {wish.target_date}</p>}
+              </div>
+              <div class="flex gap-2">
+                <button class="toggle-fulfilled text-sm px-3 py-1 rounded-lg bg-purple-900/30 hover:bg-purple-800/40 text-purple-300 transition-colors"
+                  data-id={wish.id} data-fulfilled={wish.is_fulfilled}>
+                  {wish.is_fulfilled ? 'Undo' : '✓ Done'}
+                </button>
+                <button class="delete-wish text-sm px-3 py-1 rounded-lg bg-red-900/30 hover:bg-red-800/40 text-red-400 transition-colors"
+                  data-id={wish.id}>
+                  ✕
+                </button>
+              </div>
+            </div>
+          </div>
+        ))
+      )}
+    </div>
+  </div>
+
+  <script>
+    // 写操作走服务端 /api/wishes（服务端用 cookie 注入会话带 JWT，RLS 放行）
+
+    // Submit new wish
+    document.getElementById('wish-form')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+
+      const payload = {
+        title: formData.get('title'),
+        description: formData.get('description') || null,
+        category: formData.get('category'),
+        target_date: formData.get('target_date') || null,
+      };
+
+      const res = await fetch('/api/wishes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        alert('Error saving wish: ' + (json?.error || res.statusText));
+      } else {
+        window.location.reload();
+      }
+    });
+
+    // Toggle fulfilled status
+    document.querySelectorAll('.toggle-fulfilled').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.id;
+        const current = btn.dataset.fulfilled === 'true';
+        const res = await fetch('/api/wishes', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, is_fulfilled: !current }),
+        });
+        if (res.ok) window.location.reload();
+      });
+    });
+
+    // Delete wish
+    document.querySelectorAll('.delete-wish').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (!confirm('Delete this wish?')) return;
+        const id = btn.dataset.id;
+        const res = await fetch('/api/wishes', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id }),
+        });
+        if (res.ok) {
+          document.getElementById(`wish-${id}`)?.remove();
+        }
+      });
+    });
+  </script>
+</BaseLayout>

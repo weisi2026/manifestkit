@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const posts = import.meta.glob('./**/*.md', { eager: true });
+const sortedPosts = Object.entries(posts)
+  .map(([path, post]: any) => ({
+    slug: path.replace('./', '').replace('.md', ''),
+    ...post.frontmatter
+  }))
+  .sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
+---
+
+<BaseLayout title="Manifestation Blog — Spirituality, Moon Phases & Law of Attraction | ManifestKit" description="Explore guides on the 369 manifestation method, moon rituals, affirmations, vision boards, and the law of attraction. Your spiritual toolkit starts here.">
+  <div class="text-center mb-10">
+    <h1 class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-300 to-amber-300 bg-clip-text text-transparent mb-3">🔮 Manifestation Blog</h1>
+    <p class="text-[#9B8CB8] text-lg max-w-2xl mx-auto">Guides, rituals, and wisdom for conscious creators. Learn the 369 method, moon phase rituals, affirmation techniques, and more.</p>
+  </div>
+
+  {sortedPosts.length === 0 && (
+    <div class="text-center py-16">
+      <p class="text-2xl mb-2">✨</p>
+      <p class="text-[#9B8CB8]">Blog posts are manifesting soon…</p>
+    </div>
+  )}
+
+  <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    {sortedPosts.map((post: any) => (
+      <a href={`/blog/${post.slug}`} class="group block bg-[#1A1333] rounded-2xl shadow-lg border border-purple-800/40 overflow-hidden hover:border-purple-500/60 hover:shadow-purple-900/30 hover:shadow-xl transition-all duration-300">
+        {post.image && (
+          <div class="h-48 overflow-hidden">
+            <img src={post.image} alt={post.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+          </div>
+        )}
+        <div class="p-6">
+          <h2 class="text-xl font-semibold bg-gradient-to-r from-purple-300 to-amber-300 bg-clip-text text-transparent mb-2 group-hover:from-amber-300 group-hover:to-purple-300 transition-all">{post.title}</h2>
+          <p class="text-[#9B8CB8] text-sm mb-3 line-clamp-2">{post.description}</p>
+          <time class="text-xs text-purple-500">{new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
+        </div>
+      </a>
+    ))}
+  </div>
+</BaseLayout>

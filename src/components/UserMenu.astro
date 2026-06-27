@@ -1,0 +1,62 @@
+---
+// 登录态由服务端在 BaseLayout 中查询后通过 prop 传入（不再用前端 JS 读会话，
+// 因为会话在 HttpOnly cookie 里，浏览器 JS 读不到）
+interface Props {
+  user?: {
+    email?: string | null;
+    user_metadata?: { avatar_url?: string; full_name?: string };
+  } | null;
+}
+
+const { user } = Astro.props;
+const displayName = user?.user_metadata?.full_name || user?.email || 'User';
+const avatarUrl = user?.user_metadata?.avatar_url || '';
+---
+
+<div class="relative" id="user-menu">
+  {user ? (
+    <div>
+      <button id="user-button" class="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-purple-900/40 transition-colors">
+        {avatarUrl
+          ? <img src={avatarUrl} alt={displayName} class="w-7 h-7 rounded-full" />
+          : <span class="w-7 h-7 rounded-full bg-purple-600 flex items-center justify-center text-white text-sm">{displayName.charAt(0).toUpperCase()}</span>
+        }
+        <span class="text-sm font-medium text-purple-100 hidden sm:inline">{displayName}</span>
+      </button>
+
+      <!-- Dropdown -->
+      <div id="user-dropdown" class="hidden absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
+        <a href="/dashboard" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50">Dashboard</a>
+        <a href="/dashboard/wish-journal" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50">Wish Journal</a>
+        <a href="/dashboard/affirmations" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50">Saved Affirmations</a>
+        <hr class="my-1 border-gray-100" />
+        <button id="btn-signout" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">Sign Out</button>
+      </div>
+    </div>
+  ) : (
+    <a href="/login"
+       class="px-4 py-2 bg-purple-600 text-white text-sm rounded-lg hover:bg-purple-700 transition-colors">
+      Sign In
+    </a>
+  )}
+</div>
+
+<script>
+  const button = document.getElementById('user-button');
+  const dropdown = document.getElementById('user-dropdown');
+
+  button?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dropdown?.classList.toggle('hidden');
+  });
+
+  document.addEventListener('click', () => {
+    dropdown?.classList.add('hidden');
+  });
+
+  // 退出登录：调用服务端登出路由，清除会话 cookie
+  document.getElementById('btn-signout')?.addEventListener('click', async () => {
+    await fetch('/api/auth/signout', { method: 'POST' });
+    window.location.href = '/';
+  });
+</script>

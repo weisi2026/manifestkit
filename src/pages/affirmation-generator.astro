@@ -1,0 +1,151 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Free Affirmation Generator — Daily Manifestation Affirmations | ManifestKit" description="Generate personalized daily affirmations for abundance, love, health, confidence, peace, and more. Free manifestation affirmation tool.">
+  <section class="max-w-3xl mx-auto">
+    <h1 class="text-3xl md:text-4xl font-bold text-center mb-2">
+      <span class="bg-gradient-to-r from-purple-400 to-amber-400 bg-clip-text text-transparent">✨ Affirmation Generator</span>
+    </h1>
+    <p class="text-center text-[#9B8CB8] mb-8">Choose your focus and receive a powerful affirmation to manifest your desires.</p>
+
+    <!-- Category Selector -->
+    <div id="categories" class="flex flex-wrap justify-center gap-3 mb-8"></div>
+
+    <!-- Affirmation Display -->
+    <div class="p-8 rounded-2xl bg-[#1A1333] border border-purple-800/40 text-center min-h-[200px] flex flex-col items-center justify-center">
+      <p id="affirmation-text" class="text-2xl md:text-3xl font-medium text-purple-200 leading-relaxed italic">
+        "Click a category to reveal your affirmation..."
+      </p>
+      <p id="affirmation-category" class="mt-4 text-sm text-[#9B8CB8]"></p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex justify-center gap-4 mt-6">
+      <button id="btn-new" class="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold transition-all" disabled>🔄 New Affirmation</button>
+      <button id="btn-save" class="px-6 py-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-semibold transition-all" disabled>💾 Save</button>
+      <button id="btn-copy" class="px-6 py-3 rounded-xl bg-[#1A1333] border border-purple-700/50 hover:border-purple-500 text-purple-300 font-semibold transition-all" disabled>📋 Copy</button>
+    </div>
+    <p id="save-status" class="text-center text-sm text-green-400 mt-2 hidden">✓ Saved to your collection!</p>
+
+    <!-- Daily Affirmation -->
+    <div class="mt-10 p-6 rounded-2xl bg-gradient-to-r from-purple-900/30 to-indigo-900/30 border border-purple-800/30">
+      <h2 class="text-lg font-semibold text-purple-300 mb-2">🌟 Today's Affirmation</h2>
+      <p id="daily-text" class="text-lg text-purple-100 italic">Loading...</p>
+      <p id="daily-cat" class="text-sm text-[#9B8CB8] mt-2"></p>
+    </div>
+
+    <!-- SEO Content -->
+    <article class="mt-12 space-y-6 text-[#9B8CB8] text-sm leading-relaxed">
+      <h2 class="text-xl font-semibold text-purple-300">How to Use Affirmations for Manifestation</h2>
+      <p>Positive affirmations work by reprogramming your subconscious mind. When you repeat empowering statements daily, you shift your vibration and attract experiences that match your new beliefs.</p>
+      <h3 class="text-lg font-semibold text-purple-300">Tips for Maximum Power</h3>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li>Repeat your affirmation 3x each morning and evening</li>
+        <li>Feel the emotion as if it's already true</li>
+        <li>Write it down in a journal for extra power</li>
+        <li>Pair with the <a href="/manifest-timer" class="text-amber-400 hover:underline">Manifestation Timer</a> for focused sessions</li>
+        <li>Align with <a href="/moon-phase" class="text-amber-400 hover:underline">moon phases</a> for amplified energy</li>
+      </ul>
+    </article>
+
+    <!-- Ad Slot -->
+    <div class="mt-8 text-center">
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6056859786205773" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    </div>
+  </section>
+
+  <script define:vars={{ categories: {
+    abundance: { emoji: '💰', label: 'Abundance' },
+    love: { emoji: '💕', label: 'Love' },
+    health: { emoji: '🌿', label: 'Health' },
+    confidence: { emoji: '🔥', label: 'Confidence' },
+    peace: { emoji: '🧘', label: 'Peace' },
+    success: { emoji: '🏆', label: 'Success' },
+    gratitude: { emoji: '🙏', label: 'Gratitude' },
+    'self-love': { emoji: '💜', label: 'Self-Love' },
+  }}}>
+    const affirmations = {
+      abundance:["Money flows to me easily and effortlessly.","I am a magnet for financial abundance.","Wealth constantly flows into my life.","I release all resistance to attracting money.","My income is constantly increasing.","I am worthy of financial freedom.","Abundance is my birthright.","Every dollar I spend comes back to me multiplied.","I am open and receptive to all the wealth life offers me.","My actions create constant prosperity.","I attract lucrative opportunities naturally.","Financial abundance is flowing into my life right now."],
+      love:["I am worthy of deep, unconditional love.","My heart is open to giving and receiving love.","I attract loving and supportive people into my life.","I deserve a relationship filled with passion and respect.","Love surrounds me everywhere I go.","I radiate love and love radiates back to me.","My relationship is filled with love, trust, and understanding.","I am a magnet for soul-deep connections.","Every day, my capacity for love expands.","The perfect partner is being drawn to me now.","I love myself and am loved by others deeply.","My love life is filled with joy and harmony."],
+      health:["My body is a vessel of wellness and vitality.","Every cell in my body vibrates with health and energy.","I am grateful for my healthy, strong body.","Healing energy flows through me with every breath.","I nourish my body with healthy choices.","My immune system is powerful and strong.","I am becoming healthier and stronger every day.","My body heals itself naturally and perfectly.","I radiate vibrant health and well-being.","I listen to my body and give it what it needs.","Perfect health is my birthright.","I am filled with life force and energy."],
+      confidence:["I am confident, capable, and powerful.","I trust myself and my decisions completely.","I am bold, brave, and unstoppable.","My confidence grows stronger every day.","I embrace challenges as opportunities to grow.","I am fearlessly myself at all times.","I radiate confidence, self-respect, and inner power.","I am enough just as I am.","I have everything I need to succeed.","My voice matters and I speak with authority.","I step into my power with grace and confidence.","I am the architect of my destiny."],
+      peace:["Peace flows through me like a river.","I am calm, centered, and at peace.","I release all worry and embrace serenity.","My mind is calm and my heart is still.","I choose peace over worry, every time.","I am surrounded by an ocean of peace.","With every breath, I inhale peace and exhale tension.","I am at peace with my past, present, and future.","Calm energy fills every fiber of my being.","I trust the process of life completely.","Everything is working out for my highest good.","Inner peace is my natural state of being."],
+      success:["I am destined for greatness.","Success flows to me naturally and effortlessly.","I am aligned with the energy of success.","Every day, I move closer to my vision.","I am a powerful creator of my reality.","My potential to succeed is infinite.","I achieve whatever I set my mind to.","Opportunities for success are everywhere around me.","I am successful in everything I do.","My gifts and talents are needed in this world.","I am unstoppable in the pursuit of my dreams.","Success is my natural birthright."],
+      gratitude:["I am grateful for every experience in my life.","Abundance surrounds me and I am thankful.","I appreciate the small miracles in each day.","Gratitude fills my heart and attracts more blessings.","I celebrate every moment of this beautiful life.","Thank you, Universe, for your infinite blessings.","I see beauty and abundance everywhere I look.","My life is filled with blessings I am grateful for.","I am thankful for all the good coming into my life.","Every day is a gift I deeply appreciate.","Gratitude transforms my life in magical ways.","I am grateful for who I am and who I am becoming."],
+      'self-love':["I love and accept myself exactly as I am.","I am worthy of love, respect, and kindness.","I honor my feelings and needs without guilt.","I am enough — just as I am right now.","I deserve to treat myself with compassion.","My worth is not defined by others' opinions.","I choose to love myself unconditionally.","I am proud of who I am and who I'm becoming.","I forgive myself for past mistakes with love.","My relationship with myself is my highest priority.","I am beautiful inside and out.","Self-love is the foundation of my happy life."]
+    };
+
+    let currentCat = null;
+    let currentText = '';
+    const catContainer = document.getElementById('categories');
+    const textEl = document.getElementById('affirmation-text');
+    const catLabel = document.getElementById('affirmation-category');
+    const btnNew = document.getElementById('btn-new');
+    const btnSave = document.getElementById('btn-save');
+    const btnCopy = document.getElementById('btn-copy');
+    const saveStatus = document.getElementById('save-status');
+
+    // Render category buttons
+    Object.entries(categories).forEach(([key, meta]) => {
+      const btn = document.createElement('button');
+      btn.textContent = meta.emoji + ' ' + meta.label;
+      btn.className = 'px-4 py-2 rounded-full bg-[#1A1333] border border-purple-700/50 hover:border-amber-500/60 text-purple-200 text-sm hover:text-amber-300 transition-all';
+      btn.addEventListener('click', () => showAffirmation(key));
+      catContainer.appendChild(btn);
+    });
+
+    function showAffirmation(cat) {
+      currentCat = cat;
+      const list = affirmations[cat];
+      const text = list[Math.floor(Math.random() * list.length)];
+      textEl.textContent = '"' + text + '"';
+      catLabel.textContent = categories[cat].emoji + ' ' + categories[cat].label;
+      currentText = text;
+      btnNew.disabled = false;
+      btnSave.disabled = false;
+      btnCopy.disabled = false;
+      saveStatus.classList.add('hidden');
+      // highlight active button
+      catContainer.querySelectorAll('button').forEach(b => b.classList.remove('border-amber-500','text-amber-300'));
+      // re-select on next click
+    }
+
+    btnNew.addEventListener('click', () => { if (currentCat) showAffirmation(currentCat); });
+    
+    // Save affirmation
+    btnSave.addEventListener('click', async () => {
+      if (!currentText || !currentCat) return;
+      const { supabase } = await import('../../lib/supabase');
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        window.location.href = '/login';
+        return;
+      }
+      const { error } = await supabase.from('saved_affirmations').insert({
+        text: currentText,
+        category: categories[currentCat].label,
+        is_favorite: false
+      });
+      if (error) {
+        alert('Failed to save: ' + error.message);
+      } else {
+        saveStatus.classList.remove('hidden');
+        setTimeout(() => saveStatus.classList.add('hidden'), 3000);
+      }
+    });
+    
+    btnCopy.addEventListener('click', () => {
+      const text = textEl.textContent;
+      navigator.clipboard.writeText(text).then(() => { btnCopy.textContent = '✅ Copied!'; setTimeout(() => btnCopy.textContent = '📋 Copy', 2000); });
+    });
+
+    // Daily affirmation (deterministic)
+    const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(),0,0).getTime()) / 86400000);
+    const catKeys = Object.keys(affirmations);
+    const dailyCatKey = catKeys[dayOfYear % catKeys.length];
+    const dailyList = affirmations[dailyCatKey];
+    document.getElementById('daily-text').textContent = '"' + dailyList[dayOfYear % dailyList.length] + '"';
+    document.getElementById('daily-cat').textContent = categories[dailyCatKey].emoji + ' Today\'s Focus: ' + categories[dailyCatKey].label;
+  </script>
+</BaseLayout>
